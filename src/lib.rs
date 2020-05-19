@@ -5,7 +5,7 @@
 //!
 //! ## Code Examples
 //!
-//! ### Making a task graphs
+//! ### Making task graphs
 //!
 //! ```compile_fail
 //! fn make_static_task_graph(cmd: &mut CommandBuffer) {

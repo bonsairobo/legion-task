@@ -5,6 +5,8 @@ tasks as entities and declare explicit temporal dependencies between them.
 
 ## Code Examples
 
+### Making task graphs
+
 ```
 fn make_static_task_graph(cmd: &mut CommandBuffer) {
     // Any component that implements TaskComponent can be spawned.
