@@ -5,6 +5,8 @@
 //!
 //! ## Code Examples
 //!
+//! ### Making a task graphs
+//!
 //! ```compile_fail
 //! fn make_static_task_graph(cmd: &mut CommandBuffer) {
 //!     // Any component that implements TaskComponent can be spawned.
@@ -25,6 +27,41 @@
 //!     let last = task!(@TaskZin("goodbye"));
 //!     let task_graph = seq!(first, middle, last);
 //!     task_graph.assemble(cmd, OnCompletion::Delete);
+//! }
+//! ```
+//!
+//! ### Building a schedule with a task runner system
+//!
+//! ```compile_fail
+//! #[derive(Clone, Debug)]
+//! struct PushValue {
+//!     value: usize,
+//! }
+//!
+//! impl<'a> TaskComponent<'a> for PushValue {
+//!     type Data = Vec<usize>;
+//!
+//!     fn run(&mut self, data: &mut Self::Data) -> bool {
+//!         data.push(self.value);
+//!
+//!         true
+//!     }
+//! }
+//!
+//! fn make_task_runner_system() -> Box<dyn Schedulable> {
+//!     SystemBuilder::new("example_task_runner")
+//!         .write_resource::<Vec<usize>>()
+//!         .with_query(task_runner_query::<PushValue>())
+//!         .build(|_, mut world, value, task_query| {
+//!             run_tasks(&mut world, &mut **value, task_query)
+//!         })
+//! }
+//!
+//! fn make_schedule() -> Schedule {
+//!     Schedule::builder()
+//!         .add_system(build_push_value_task_runner_system())
+//!         .add_system(build_task_manager_system("task_manager"))
+//!         .build()
 //! }
 //! ```
 //!
