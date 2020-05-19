@@ -253,7 +253,7 @@ mod tests {
         let (mut world, mut resources, mut schedule) = set_up();
 
         fn make_task_graph() -> TaskGraph {
-            task!(Noop::default())
+            task!(@Noop::default())
         }
         let root = assemble_task_graph(
             make_task_graph,
@@ -277,7 +277,7 @@ mod tests {
         let (mut world, mut resources, mut schedule) = set_up();
 
         fn make_task_graph() -> TaskGraph {
-            task!(Noop::default())
+            task!(@Noop::default())
         }
         let root = assemble_task_graph(
             make_task_graph,
