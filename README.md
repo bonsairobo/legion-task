@@ -7,7 +7,7 @@ tasks as entities and declare explicit temporal dependencies between them.
 
 ### Making task graphs
 
-```
+```rust
 fn make_static_task_graph(cmd: &mut CommandBuffer) {
     // Any component that implements TaskComponent can be spawned.
     let task_graph = seq!(
@@ -32,7 +32,7 @@ fn make_dynamic_task_graph(cmd: &mut CommandBuffer) {
 
 ### Building a schedule with a task runner system
 
-```compile_fail
+```rust
 #[derive(Clone, Debug)]
 struct PushValue {
     value: usize,
