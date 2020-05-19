@@ -1,8 +1,12 @@
 [package]
 name = "legion-task"
 version = "0.1.0"
-authors = ["Duncan <bonsairobo@gmail.com>"]
+authors = ["Duncan Fairbanks <fduncan@umich.com>"]
 edition = "2018"
+
+description = "Fork-join multitasking for Legion ECS"
+license = "MIT"
+repository = "https://github.com/bonsairobo/legion-task.git"
 
 [dependencies]
 itertools = "*"
