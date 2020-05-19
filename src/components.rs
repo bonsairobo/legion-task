@@ -116,10 +116,12 @@ pub fn add_prong(cmd: &CommandBuffer, fork_entity: Entity, prong: Entity) {
     cmd.exec_mut(move |world| {
         let mut multi_edge = world
             .get_component_mut::<MultiEdge>(fork_entity)
-            .unwrap_or_else(|| panic!(
-                "Tried to add prong {} to non-fork entity {}",
-                prong, fork_entity
-            ));
+            .unwrap_or_else(|| {
+                panic!(
+                    "Tried to add prong {} to non-fork entity {}",
+                    prong, fork_entity
+                )
+            });
         multi_edge.add_child(prong);
     });
     log::debug!(

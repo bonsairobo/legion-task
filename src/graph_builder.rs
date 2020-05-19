@@ -32,21 +32,17 @@ pub enum Cons<T> {
 impl<T> Cons<T> {
     fn remove_nil(self) -> Self {
         match self {
-            Cons::Seq(head, tail) => {
-                match (*head, *tail) {
-                    (Cons::Nil, Cons::Nil) => Cons::Nil,
-                    (Cons::Nil, t) => t.remove_nil(),
-                    (h, Cons::Nil) => h.remove_nil(),
-                    (h, t) => Cons::Seq(Box::new(h.remove_nil()), Box::new(t.remove_nil())),
-                }
+            Cons::Seq(head, tail) => match (*head, *tail) {
+                (Cons::Nil, Cons::Nil) => Cons::Nil,
+                (Cons::Nil, t) => t.remove_nil(),
+                (h, Cons::Nil) => h.remove_nil(),
+                (h, t) => Cons::Seq(Box::new(h.remove_nil()), Box::new(t.remove_nil())),
             },
-            Cons::Fork(head, tail) => {
-                match (*head, *tail) {
-                    (Cons::Nil, Cons::Nil) => Cons::Nil,
-                    (Cons::Nil, t) => t.remove_nil(),
-                    (h, Cons::Nil) => h.remove_nil(),
-                    (h, t) => Cons::Fork(Box::new(h.remove_nil()), Box::new(t.remove_nil())),
-                }
+            Cons::Fork(head, tail) => match (*head, *tail) {
+                (Cons::Nil, Cons::Nil) => Cons::Nil,
+                (Cons::Nil, t) => t.remove_nil(),
+                (h, Cons::Nil) => h.remove_nil(),
+                (h, t) => Cons::Fork(Box::new(h.remove_nil()), Box::new(t.remove_nil())),
             },
             Cons::Task(t) => Cons::Task(t),
             Cons::Nil => Cons::Nil,
@@ -96,9 +92,7 @@ impl Cons<Box<dyn TaskFactory + Send + Sync>> {
 
                 (task_entity, task_entity)
             }
-            Cons::Nil => {
-                panic!("Tried to assemble Cons::Nil, which should always be removed.")
-            }
+            Cons::Nil => panic!("Tried to assemble Cons::Nil, which should always be removed."),
         }
     }
 
@@ -119,7 +113,9 @@ impl Cons<Box<dyn TaskFactory + Send + Sync>> {
 /// dynamically.
 #[macro_export]
 macro_rules! empty_graph {
-    () => ( Cons::Nil );
+    () => {
+        Cons::Nil
+    };
 }
 
 /// Make a single-node `TaskGraph`.
@@ -268,6 +264,9 @@ mod tests {
             s = seq!(s, @Foo(i));
         }
         // Unfortunately removing nils puts the tree in an equivalent but not equal shape.
-        assert_eq!(s.remove_nil(), seq!(seq!(seq!(@Foo(0), @Foo(1)), @Foo(2)), @Foo(3)));
+        assert_eq!(
+            s.remove_nil(),
+            seq!(seq!(seq!(@Foo(0), @Foo(1)), @Foo(2)), @Foo(3))
+        );
     }
 }

@@ -35,6 +35,7 @@ pub fn run_tasks<'a, T: 'static + TaskComponent<'a>>(
     }
 }
 
+/// The `EntityFilterTuple` for `task_runner_query`.
 pub type TaskEntityFilter<T> = EntityFilterTuple<
     And<(ComponentFilter<TaskProgress>, ComponentFilter<T>)>,
     And<(Passthrough, Passthrough)>,
@@ -42,9 +43,7 @@ pub type TaskEntityFilter<T> = EntityFilterTuple<
 >;
 
 /// The legion system query required to run all tasks with `T: TaskComponent`.
-pub fn task_runner_query<'a, T: 'static + TaskComponent<'a>>() -> Query<
-    (Read<TaskProgress>, Write<T>),
-    TaskEntityFilter<T>,
-> {
+pub fn task_runner_query<'a, T: 'static + TaskComponent<'a>>(
+) -> Query<(Read<TaskProgress>, Write<T>), TaskEntityFilter<T>> {
     <(Read<TaskProgress>, Write<T>)>::query()
 }
