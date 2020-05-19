@@ -1,0 +1,13 @@
+[package]
+name = "legion-task"
+version = "0.1.0"
+authors = ["Duncan <bonsairobo@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+itertools = "*"
+legion = { git = "https://github.com/TomGillen/legion" }
+log = "*"
+
+[dev-dependencies]
+simple_logger = "*"
