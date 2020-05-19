@@ -12,7 +12,11 @@
 //!     // Any component that implements TaskComponent can be spawned.
 //!     let task_graph = seq!(
 //!         @TaskFoo("hello"),
-//!         fork!(@TaskBar { value: 2 }, @TaskBar { value: 3 }),
+//!         fork!(
+//!             @TaskBar { value: 1 },
+//!             @TaskBar { value: 2 },
+//!             @TaskBar { value: 3 }
+//!         ),
 //!         @TaskZing("goodbye")
 //!     );
 //!     task_graph.assemble(cmd, OnCompletion::Delete);
