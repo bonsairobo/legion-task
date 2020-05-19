@@ -177,7 +177,7 @@ pub fn build_task_manager_system<I: Into<SystemId>>(id: I) -> Box<dyn Schedulabl
         .with_query(<Read<FinalTag>>::query())
         .build(|cmd, mut world, _, final_tasks_query| {
             let final_entities: Vec<(Entity, FinalTag)> = final_tasks_query
-                .iter_entities(&mut world)
+                .iter_entities(&world)
                 .map(|(e, f)| (e, *f))
                 .collect();
 

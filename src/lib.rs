@@ -153,7 +153,7 @@ pub use components::{
 };
 pub use graph_builder::{Cons, TaskFactory, TaskGraph};
 pub use manager::{build_task_manager_system, entity_is_complete};
-pub use runner::{run_tasks, task_runner_query};
+pub use runner::{run_tasks, task_runner_query, TaskEntityFilter, TaskQuery};
 
 #[cfg(test)]
 mod tests {
