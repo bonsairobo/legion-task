@@ -24,7 +24,7 @@
 //!     for i in 0..10 {
 //!         middle = fork!(middle, @TaskBar { value: i });
 //!     }
-//!     let last = task!(@TaskZin("goodbye"));
+//!     let last = task!(@TaskZing("goodbye"));
 //!     let task_graph = seq!(first, middle, last);
 //!     task_graph.assemble(cmd, OnCompletion::Delete);
 //! }
