@@ -55,7 +55,7 @@ pub struct FinalTag {
     pub(crate) on_completion: OnCompletion,
 }
 
-/// What to do to a final task and its descendents when it they complete.
+/// What to do to a final task and its descendents when they complete.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum OnCompletion {
     None,

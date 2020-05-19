@@ -16,7 +16,16 @@
 //!     task_graph.assemble(cmd, OnCompletion::Delete);
 //! }
 //!
-//! // TODO: accumulate a graph in a loop
+//! fn make_dynamic_task_graph(cmd: &mut CommandBuffer) {
+//!     let first = task!(@TaskFoo("hello"));
+//!     let mut middle = empty_graph!();
+//!     for i in 0..10 {
+//!         middle = fork!(middle, @TaskBar { value: i });
+//!     }
+//!     let last = task!(@TaskZin("goodbye"));
+//!     let task_graph = seq!(first, middle, last);
+//!     task_graph.assemble(cmd, OnCompletion::Delete);
+//! }
 //! ```
 //!
 //! ## Data Model
@@ -59,7 +68,8 @@
 //! that the children on the `MultiEdge` are called "prongs" of the fork.
 //!
 //!```
-//! r#"      single          single          single t0 <-------- F1 <-------------- F2 <-------- t3
+//! r#"      single          single          single
+//!     t0 <-------- F1 <-------------- F2 <-------- t3
 //!                   |                  |
 //!          t1.1 <---|          t2.1 <--|
 //!          t1.2 <---| multi    t2.2 <--| multi
@@ -105,9 +115,10 @@
 //!
 //! ## Macro Usage
 //!
-//! Every user of this module should create task graphs via the `seq!`, `fork!`, and `task!` macros,
-//! which make it easy to construct task graphs correctly. Once a graph is ready, call `assemble` on
-//! it to mark the task entities for execution (by finalizing the root of the graph).
+//! Every user of this module should create task graphs via the `empty_graph!`, `seq!`, `fork!`, and
+//! `task!` macros, which make it easy to construct task graphs correctly. Once a graph is ready,
+//! call `assemble` on it to mark the task entities for execution (by finalizing the root of the
+//! graph).
 //!
 //! These systems must be scheduled for tasks to make progress:
 //!   - a system created with `build_task_manager_system`
@@ -140,7 +151,7 @@ pub use components::{
     add_prong, finalize, join, make_fork, make_task, with_task_components, FinalTag, OnCompletion,
     TaskComponent, TaskProgress,
 };
-pub use graph_builder::{Cons, TaskGraph};
+pub use graph_builder::{Cons, TaskFactory, TaskGraph};
 pub use manager::{build_task_manager_system, entity_is_complete};
 pub use runner::{run_tasks, task_runner_query};
 
