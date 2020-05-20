@@ -27,13 +27,11 @@ pub fn run_tasks<'a, T: 'static + TaskComponent<'a>>(
     task_query: &mut TaskSystemQuery<T>,
 ) {
     for (task_progress, mut task) in task_query.iter_mut(world) {
-        if !task_progress.is_unblocked {
+        if !task_progress.is_unblocked || task_progress.is_complete() {
             continue;
         }
         let is_complete = task.run(task_component_data);
         if is_complete {
-            // This should cause the task manager system to remove the `TaskProgress` from this
-            // entity, so we won't see it again.
             task_progress.complete();
         }
     }

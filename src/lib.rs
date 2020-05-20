@@ -291,7 +291,9 @@ mod tests {
     ) {
         let assert_system =
             with_task_components(SystemBuilder::new("asserter")).build(move |_, subworld, _, _| {
-                assert!(entity_is_complete(&subworld, task));
+                if is_alive {
+                    assert!(entity_is_complete(&subworld, task));
+                }
                 assert_eq!(subworld.is_alive(task), is_alive);
             });
         let mut assert_schedule = Schedule::builder().add_system(assert_system).build();

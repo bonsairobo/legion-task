@@ -6,19 +6,19 @@ use legion::{
 };
 
 /// Returns true iff the task was seen as complete on the last run of the `TaskManagerSystem`.
-///
-/// WARNING: assumes that this entity was at one point a task, and it can't tell otherwise.
 pub fn task_is_complete(world: &SubWorld, entity: Entity) -> bool {
-    world.get_component::<TaskProgress>(entity).is_none()
+    if let Some(progress) = world.get_component::<TaskProgress>(entity) {
+        progress.is_complete()
+    } else {
+        // Task entity may not have a TaskProgress component yet if it's constructed lazily.
+        false
+    }
 }
 
 /// Returns true iff all of `entity`'s children are complete.
-pub fn fork_is_complete(world: &SubWorld, entity: Entity, multi_children: &[Entity]) -> bool {
-    if let Some(edge) = world.get_component::<SingleEdge>(entity) {
-        if !entity_is_complete(world, edge.child) {
-            return false;
-        }
-    }
+pub fn fork_is_complete(world: &SubWorld, multi_children: &[Entity]) -> bool {
+    // We know that a fork's SingleEdge child is complete if any of the MultiEdge children are
+    // complete.
     for child in multi_children.iter() {
         if !entity_is_complete(world, *child) {
             return false;
@@ -29,13 +29,11 @@ pub fn fork_is_complete(world: &SubWorld, entity: Entity, multi_children: &[Enti
 }
 
 /// Tells you whether a fork or a task entity is complete.
-///
-/// WARNING: assumes that this entity was at one point a task or a fork, and it can't tell
-/// otherwise.
 pub fn entity_is_complete(world: &SubWorld, entity: Entity) -> bool {
-    // Only fork entities can have `MultiEdge`s, and they always do.
+    // Only fork entities can have `MultiEdge`s. If the entity is being created lazily, we won't
+    // know if it's a fork or task, but we won't consider it complete regardless.
     if let Some(edge) = world.get_component::<MultiEdge>(entity) {
-        fork_is_complete(world, entity, &edge.children)
+        fork_is_complete(world, &edge.children)
     } else {
         task_is_complete(world, entity)
     }
@@ -85,9 +83,6 @@ fn maintain_task_and_descendents(
             "Noticed task {:?} is complete, removing TaskProgress",
             entity
         );
-        // Task will no longer be considered by the `TaskRunnerSystem`.
-        // PERF: avoid this?
-        cmd.remove_component::<TaskProgress>(entity);
         return true;
     }
 
@@ -163,7 +158,6 @@ fn maintain_entity_and_descendents(
 /// possible.
 ///
 /// Also does some garbage collection:
-///   - removes `TaskProgress` components from completed tasks
 ///   - deletes task graphs with `OnCompletion::Delete`
 ///   - removes `FinalTag` components from completed entities
 pub fn build_task_manager_system<I: Into<SystemId>>(id: I) -> Box<dyn Schedulable> {
