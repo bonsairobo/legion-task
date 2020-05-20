@@ -181,10 +181,8 @@
 //!     components; these should only be used inside this module
 //!
 
-#[macro_use]
-mod graph_builder;
-
 mod components;
+mod graph_builder;
 mod manager;
 mod runner;
 

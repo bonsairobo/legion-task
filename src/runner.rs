@@ -32,7 +32,7 @@ pub fn run_tasks<'a, T: 'static + TaskComponent<'a>>(
         }
         let is_complete = task.run(task_component_data);
         if is_complete {
-            // This should cause the `TaskManagerSystem` to remove the `TaskProgress` from this
+            // This should cause the task manager system to remove the `TaskProgress` from this
             // entity, so we won't see it again.
             task_progress.complete();
         }
