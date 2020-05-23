@@ -158,6 +158,7 @@ macro_rules! seq {
     ($head:expr) => ( $head );
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
 
