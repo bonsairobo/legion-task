@@ -11,6 +11,7 @@ repository = "https://github.com/bonsairobo/legion-task.git"
 [dependencies]
 itertools = "*"
 legion = { git = "https://github.com/TomGillen/legion" }
+# legion = "0.2.1"
 log = "*"
 
 [dev-dependencies]

@@ -1,9 +1,6 @@
 use crate::components::{FinalTag, MultiEdge, OnCompletion, SingleEdge, TaskProgress};
 
-use legion::{
-    prelude::*,
-    systems::{SubWorld, SystemId},
-};
+use legion::{prelude::*, systems::SystemId};
 
 /// Returns true iff the task was seen as complete on the last run of the `TaskManagerSystem`.
 pub fn task_is_complete(world: &SubWorld, entity: Entity) -> bool {
@@ -169,21 +166,21 @@ pub fn build_task_manager_system<I: Into<SystemId>>(id: I) -> Box<dyn Schedulabl
         .read_component::<TaskProgress>()
         .write_component::<TaskProgress>()
         .with_query(<Read<FinalTag>>::query())
-        .build(|cmd, mut world, _, final_tasks_query| {
+        .build(|cmd, world, _, final_tasks_query| {
             let final_entities: Vec<(Entity, FinalTag)> = final_tasks_query
-                .iter_entities(&world)
+                .iter_entities(world)
                 .map(|(e, f)| (e, *f))
                 .collect();
 
             for (entity, FinalTag { on_completion }) in final_entities.into_iter() {
-                let final_complete = maintain_entity_and_descendents(cmd, &mut world, entity);
+                let final_complete = maintain_entity_and_descendents(cmd, world, entity);
                 if final_complete {
                     match on_completion {
                         OnCompletion::Delete => {
-                            delete_entity_and_descendents(cmd, &world, entity);
+                            delete_entity_and_descendents(cmd, world, entity);
                         }
                         OnCompletion::DeleteDescendents => {
-                            delete_descendents(cmd, &world, entity);
+                            delete_descendents(cmd, world, entity);
                         }
                         OnCompletion::None => {
                             log::debug!("Removing FinalTag from {:?}", entity);

@@ -3,11 +3,11 @@ use crate::components::{TaskComponent, TaskProgress};
 use legion::{
     filter::{And, ComponentFilter, EntityFilterTuple, Passthrough},
     prelude::*,
-    systems::{SubWorld, SystemQuery},
+    query::Query,
 };
 
 /// The type of `SystemQuery` created by `task_runner_query` and used by `run_tasks`.
-pub type TaskSystemQuery<T> = SystemQuery<(Read<TaskProgress>, Write<T>), TaskEntityFilter<T>>;
+pub type TaskSystemQuery<T> = Query<(Read<TaskProgress>, Write<T>), TaskEntityFilter<T>>;
 
 /// The type of `Query` created by `task_runner_query` and used by `run_tasks`.
 pub type TaskQuery<T> = Query<(Read<TaskProgress>, Write<T>), TaskEntityFilter<T>>;
@@ -38,7 +38,6 @@ pub fn run_tasks<'a, T: 'static + TaskComponent<'a>>(
 }
 
 /// The legion system query required to run all tasks with `T: TaskComponent`.
-pub fn task_runner_query<'a, T: 'static + TaskComponent<'a>>(
-) -> TaskQuery<T> {
+pub fn task_runner_query<'a, T: 'static + TaskComponent<'a>>() -> TaskQuery<T> {
     <(Read<TaskProgress>, Write<T>)>::query()
 }
