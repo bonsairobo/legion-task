@@ -14,4 +14,4 @@ legion = "0.2.4"
 log = "0.4.11"
 
 [dev-dependencies]
-simple_logger = "*"
+simple_logger = "1.6.0"
