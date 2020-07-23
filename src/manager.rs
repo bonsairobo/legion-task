@@ -179,9 +179,6 @@ pub fn build_task_manager_system<I: Into<SystemId>>(id: I) -> Box<dyn Schedulabl
                         OnCompletion::Delete => {
                             delete_entity_and_descendents(cmd, world, entity);
                         }
-                        OnCompletion::DeleteDescendents => {
-                            delete_descendents(cmd, world, entity);
-                        }
                         OnCompletion::None => {
                             log::debug!("Removing FinalTag from {:?}", entity);
                             // PERF: avoid this?
